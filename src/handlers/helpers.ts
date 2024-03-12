@@ -2,6 +2,7 @@ import { Env } from "..";
 import { OAuth2IdentifyUser, handleOauth } from "./discord";
 import { createMemberByEmail, getGhostAuth, getMemberByEmail, getMemberImpersonationByEmail, GhostMember } from "./ghost";
 const OAUTH2_AUTH_URI: string = 'https://discord.com/oauth2/authorize?client_id=1216308158038020137&response_type=code&redirect_uri=https%3A%2F%2Flogin.pnly.io&scope=identify+email&prompt=none'
+const BANNED_USERS_THIS_IS_PUBLIC_TO_SHAME_YOU: string[] = ['170084968788262913']
 
 export async function resolveSiteHit(
     request: Request,
@@ -18,6 +19,7 @@ export async function resolveSiteHit(
         )
         const USER_DATA = await OAuth2IdentifyUser(OAUTH2_DATA)
         if (!USER_DATA.email) {return Response.redirect('https://blog.pnly.io')}
+        if (BANNED_USERS_THIS_IS_PUBLIC_TO_SHAME_YOU.includes(USER_DATA.id)) {return Response.redirect('https://blog.pnly.io')}
         const GHOST_AUTH = await getGhostAuth(
             env.ADMIN_USER,
             env.ADMIN_PASS
